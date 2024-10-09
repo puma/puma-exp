@@ -1256,6 +1256,28 @@ class TestPumaServer < Minitest::Test
     assert_equal "7", content_length
   end
 
+  def test_chunked_keep_alive_twenty_back_to_back
+    skip if :windows
+    requests = 0
+    body = nil
+    content_length = nil
+
+    server_run { |env|
+      requests += 1
+      body = env['rack.input'].read
+      content_length = env['CONTENT_LENGTH']
+      [200, {}, ["Request_#{requests}"]]
+    }
+
+    req = "GET / HTTP/1.1\r\nX-Forwarded-For: 127.0.0.1\r\nConnection: Keep-Alive\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nh\r\n4\r\nello\r\n0\r\n\r\n"
+
+    socket = send_http(req * 20)
+
+    20.times do |i|
+      assert_equal "Request_#{i+1}", socket.read_body
+    end
+  end
+
   def test_chunked_keep_alive_two_back_to_back_with_set_remote_address
     body = nil
     content_length = nil
