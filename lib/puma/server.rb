@@ -361,9 +361,6 @@ module Puma
               if sock == check
                 break if handle_check
               else
-                # uncommenting this may cause 'long tail' response times when all
-                # workers are busy
-                # pool.wait_until_not_full if @clustered
                 sleep 0.001 while pool.out_of_band_running
                 pool.wait_for_less_busy_worker(options[:wait_for_less_busy_worker])
 
