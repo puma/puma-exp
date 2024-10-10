@@ -156,7 +156,7 @@ module Puma
       [@timeout_at - Process.clock_gettime(Process::CLOCK_MONOTONIC), 0].max
     end
 
-    def reset(fast_check=true)
+    def reset
       @parser.reset
       @io_buffer.reset
       @read_header = true
