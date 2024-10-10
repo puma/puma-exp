@@ -478,8 +478,6 @@ module Puma
 
           requests += 1
 
-          Thread.pass
-
           client.reset
 
           # This indicates that the socket has pipelined (multiple)
