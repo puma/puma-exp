@@ -477,10 +477,10 @@ module Puma
 
           client.reset
 
-          # This indicates that the socket has pipelined (multiple)
+          # This indicates that the socket may have back-to-back
           # requests on it, so process them
-          next_request_ready = if client.has_buffer
-            with_force_shutdown(client) { client.fast_try_to_finish }
+          next_request_ready = if client.has_back_to_back_requests?
+            with_force_shutdown(client) { client.process_back_to_back_requests }
           else
             nil
           end
