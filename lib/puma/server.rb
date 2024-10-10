@@ -72,8 +72,6 @@ module Puma
       @app = app
       @events = events || Events.new
 
-      @clustered = (options[:workers] || 0) > 1
-
       @check, @notify = nil
       @status = :stop
 
