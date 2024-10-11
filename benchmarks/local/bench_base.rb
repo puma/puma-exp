@@ -105,7 +105,7 @@ module TestPuma
 
     def setup_options
       # STDOUT.syswrite "\n\n#{ARGV}\n"
-    
+
       OptionParser.new do |o|
         o.on "-T", "--stream-threads THREADS", OptionParser::DecimalInteger, "request_stream: loops/threads" do |arg|
           @stream_threads = arg.to_i

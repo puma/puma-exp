@@ -109,8 +109,8 @@ module TestPuma
           wid_3 = [2, 5, 7, 10, 12, 15, 17]
           ind_2 = wid_2[@workers - 2]
           ind_3 = wid_3[@workers - 2]
-          
-          
+
+
           "#{' ' * (93 - str_len)}#{'─' * ind_1} Worker Request Info #{'─' * ind_1}\n" \
           "#{@ka.ljust 18   }       ─────────────────────────── Latency ───────────────────────────    Std" \
             "#{' ' * ind_2}% deviation#{' ' * ind_3}Total\n" \
@@ -137,7 +137,7 @@ module TestPuma
               req << t/div.to_f
             end
             n = req.length.to_f
-            
+
             sq_sum = 0
             sum = 0
             req.each do |i|
@@ -158,7 +158,7 @@ module TestPuma
           end
           STDOUT.syswrite "\n"
         else
-          STDOUT.syswrite "\n"        
+          STDOUT.syswrite "\n"
         end
       end
     end
