@@ -158,7 +158,7 @@ module TestPuma
           end
           STDOUT.syswrite "\n"
         else
-          STDOUT.syswrite "\n"        
+          STDOUT.syswrite "\n"
         end
       end
     end
