@@ -125,8 +125,8 @@ module TestPuma
         STDOUT.syswrite "#{data[:mult]} #{k.to_s.rjust 3} #{data[:rps].to_s.rjust 12}  "
         data[:latency].each { |pc, time| STDOUT.syswrite "#{time.to_s.rjust 8}" }
 
-
-        if (@workers || 0)>  1
+        if (@workers || 0)> 1
+          # print worker request info from stats
           if stats = @stats_data[k]
             div = k * @req_per_connection/100.to_f
             ttl_req = 0
@@ -145,7 +145,7 @@ module TestPuma
               sum += i
             end
             var = (sq_sum - sum**2/n)/n
-            STDOUT.write format('  %7.3f', Math.sqrt(var))
+            STDOUT.syswrite format('  %7.3f', Math.sqrt(var))
 
             # req.sort.each { |r| STDOUT.syswrite format(' %5.2f', r) }
             percents = req.sort.map do |r|
@@ -154,9 +154,11 @@ module TestPuma
               format fmt, percent
             end.join
 
-            STDOUT.write "  #{percents}  #{format ' %5d', ttl_req}"
+            STDOUT.syswrite "  #{percents}  #{format ' %5d', ttl_req}"
           end
           STDOUT.syswrite "\n"
+        else
+          STDOUT.syswrite "\n"        
         end
       end
     end
