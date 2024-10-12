@@ -69,6 +69,7 @@ module Puma
     #   calling code to not require events.rb.
     #
     def initialize(app, events = nil, options = {})
+      @closed_conections = 0
       @app = app
       @events = events || Events.new
 
@@ -396,6 +397,12 @@ module Puma
         end
 
         graceful_shutdown if @status == :stop || @status == :restart
+
+        # don't log if running in CI or server is the control server
+        # debug_remove
+        unless Object.const_defined?(:Minitest) || 'Puma::App::Status' == @app.class.to_s
+          STDOUT.syswrite "\n  @closed_conections #{@closed_conections}  reactor #{@reactor&.selector_size_max}  tp #{pool&.backlog_max}\n"
+        end
       rescue Exception => e
         @log_writer.unknown_error e, nil, "Exception handling servers"
       ensure
@@ -468,6 +475,7 @@ module Puma
         @requests_count += 1
         case handle_request(client, requests + 1)
         when false
+          @closed_conections += 1
         when :async
           close_socket = false
         when true
