@@ -15,6 +15,8 @@ module Puma
   #
   # The implementation uses a Queue to synchronize adding new objects from the internal select loop.
   class Reactor
+    attr_reader :selector_size, :selector_size_max
+
     # Create a new Reactor to monitor IO objects added by #add.
     # The provided block will be invoked when an IO has data available to read,
     # its timeout elapses, or when the Reactor shuts down.
@@ -29,6 +31,8 @@ module Puma
       @input = Queue.new
       @timeouts = []
       @block = block
+      @selector_size = 0
+      @selector_size_max = 0
     end
 
     # Run the internal select loop, using a background thread by default.
@@ -108,6 +112,8 @@ module Puma
     # Start monitoring the object.
     def register(client)
       @selector.register(client.to_io, :r).value = client
+      @selector_size += 1
+      @selector_size_max = @selector_size if @selector_size > @selector_size_max
       @timeouts << client
     rescue ArgumentError
       # unreadable clients raise error when processed by NIO
@@ -118,6 +124,7 @@ module Puma
     def wakeup!(client)
       if @block.call client
         @selector.deregister client.to_io
+        @selector_size -= 1
         @timeouts.delete client
       end
     end
