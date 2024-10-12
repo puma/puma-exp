@@ -37,6 +37,7 @@ module Puma
       @mutex = Mutex.new
 
       @todo = []
+      @backlog_max = 0
 
       @spawned = 0
       @waiting = 0
@@ -89,6 +90,12 @@ module Puma
     #
     def backlog
       with_mutex { @todo.size }
+    end
+
+    # The maximum size of the backlog
+    #
+    def backlog_max
+      with_mutex { @backlog_max }
     end
 
     # @!attribute [r] pool_capacity
@@ -227,6 +234,8 @@ module Puma
         end
 
         @todo << work
+        t = @todo.size
+        @backlog_max = t if t > @backlog_max
 
         if @waiting < @todo.size and @spawned < @max
           spawn_thread
