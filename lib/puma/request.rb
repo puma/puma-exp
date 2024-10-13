@@ -165,8 +165,7 @@ module Puma
       # This allows Puma to service connections fairly when the number
       # of concurrent connections exceeds the size of the threadpool.
       force_keep_alive = if @enable_keep_alives
-        client.requests_served < @max_fast_inline ||
-        @thread_pool.busy_threads < @max_threads
+        client.requests_served < @max_keep_alive
       else
         # Always set force_keep_alive to false if the server has keep-alives not enabled.
         false
@@ -580,7 +579,7 @@ module Puma
     #   response body
     # @param io_buffer [Puma::IOBuffer] modified inn place
     # @param force_keep_alive [Boolean] 'anded' with keep_alive, based on system
-    #   status and `@max_fast_inline`
+    #   status and `@max_keep_alive`
     # @return [Hash] resp_info
     # @version 5.0.3
     #
