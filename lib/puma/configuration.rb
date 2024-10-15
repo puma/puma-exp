@@ -145,7 +145,7 @@ module Puma
       # we amortize the cost of going back to the reactor for a well behaved
       # but very "greedy" client across 10 requests. This prevents a not
       # well behaved client from monopolizing the thread forever.
-      max_fast_inline: 10,
+      max_fast_inline: 50,
       max_threads: Puma.mri? ? 5 : 16,
       min_threads: 0,
       mode: :http,
